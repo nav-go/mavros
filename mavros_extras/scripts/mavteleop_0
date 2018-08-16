@@ -13,14 +13,29 @@ import sys
 import argparse
 import rospy
 import mavros
+import time
 
 from tf.transformations import quaternion_from_euler
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Header, Float64
 from geometry_msgs.msg import PoseStamped, TwistStamped, Vector3, Quaternion, Point
 from mavros_msgs.msg import OverrideRCIn
+
+import mavros_msgs.srv
 from mavros import command
 from mavros import setpoint as SP
+
+# class Solo(object):
+
+#     def __init__(self,solo_id):
+#         self.solo_id = solo_id
+#         mavros_string = "/mavros"
+
+# s1 = Solo(1) #solo object
+
+IS_APM = True
+# mavros_string = "/mavros"
+# sensor_topic = "/odometry/filtered"
 
 
 def arduino_map(x, inmin, inmax, outmin, outmax):
@@ -88,7 +103,7 @@ button_map = {
     'disarm' : 1,
     'takeoff': 2,
     'land': 3,
-    'enable': 4
+    'enable': 5
 }
 
 
@@ -110,6 +125,40 @@ def arm(args, state):
     # else:
     #     rospy.loginfo("Request success.")
 
+# def disarm(self):
+#         arm = rospy.ServiceProxy(self.mavros_string+'/cmd/arming', mavros_msgs.srv.CommandBool)  
+#         print "Disarm: ", arm(False)
+
+def takeoff(self,des_alt):
+    try:
+        command.takeoff(altitude=des_alt)
+    except rospy.ServiceException as ex:
+        print("Takeoff Failed")
+
+def land(self,des_alt):
+    try:
+        command.land(altitude=des_alt)
+    except rospy.ServiceException as ex:
+        print("Landing Failed")
+
+def setmode(self,base_mode=0,custom_mode="OFFBOARD",delay=0.1):
+        set_mode = rospy.ServiceProxy('/mavros/set_mode', mavros_msgs.srv.SetMode)  
+        if IS_APM:
+            
+            if custom_mode == "OFFBOARD":
+                custom_mode = "GUIDED"
+            if custom_mode == "AUTO.LAND":
+                custom_mode = "LAND"
+            if custom_mode == "MANUAL":
+                custom_mode = "STABILIZE"
+            if custom_mode == "POSCTL":
+                custom_mode = "LOITER"
+        ret = set_mode(base_mode=base_mode, custom_mode=custom_mode)
+        print ("Changing modes: ", ret)
+        time.sleep(delay)
+
+
+
 
 def load_map(m, n):
     for k, v in m.items():
@@ -122,12 +171,69 @@ def get_axis(j, n):
 def get_buttons(j, n):
     return j.buttons[ button_map[n]]
 
-def rc_override_control(args):
-    rospy.loginfo("MAV-Teleop: RC Override control type.")
+###VELOCITY CONTROL###
+
+def velocity_setpoint_control(args):
+    rospy.loginfo("MAV-Teleop: Velocity setpoint control type.")
 
     load_map(axes_map, '~axes_map/')
     load_map(axes_scale, '~axes_scale/')
     load_map(button_map, '~button_map/')
+
+    vel_pub = SP.get_pub_velocity_cmd_vel(queue_size=10)
+
+    def joy_cb(joy):
+        # get axes normalized to -1.0..+1.0 RPYT
+        roll = get_axis(joy, 'roll')
+        pitch = get_axis(joy, 'pitch')
+        yaw = get_axis(joy, 'yaw')
+        throttle = get_axis(joy, 'throttle')
+
+        rospy.logdebug("RPYT: %f, %f, %f, %f", roll, pitch, yaw, throttle)
+
+        if get_buttons(joy,'arm') == 1:
+            arm(args, True)
+        elif get_buttons(joy,'disarm') == 1:
+            arm(args, False)
+
+        if get_buttons(joy,'takeoff') == 1:
+            takeoff(args, 2.0)
+        elif get_buttons(joy,'land') == 1:
+            land(args, 0)
+
+        if get_buttons(joy,'enable') == 1:
+            setmode(args)
+
+        # Based on QGC UAS joystickinput_settargets branch
+        # not shure that it really need inegrating, as it done in QGC.
+        twist = TwistStamped(header=Header(stamp=rospy.get_rostime()))
+        twist.twist.linear = Vector3(x=roll, y=pitch, z=throttle)
+        twist.twist.angular = Vector3(z=yaw)
+        vel_pub.publish(twist)
+
+        
+
+    jsub = rospy.Subscriber("joy", Joy, joy_cb)
+    rospy.spin()
+
+
+#RC CONTROL
+
+def rc_override_control(args):
+    rospy.loginfo("MAV-Teleop: RC Overriif get_buttons(joy,'arm') == 1:
+            arm(args, True)
+        elif get_buttons(joy,'disarm') == 1:
+            arm(args, False)l type.")
+
+    load_map(axes_map, '~axes_map/')
+    load_map(axes_scale, '~axes_scale/')if get_buttons(joy,'arm') == 1:
+            arm(args, True)
+        elif get_buttons(joy,'disarm') == 1:
+            arm(args, False)
+    load_map(button_map, '~button_map/')if get_buttons(joy,'arm') == 1:
+            arm(args, True)
+        elif get_buttons(joy,'disarm') == 1:
+            arm(args, False)
     for k, v in rc_channels.items():
         v.load_param()
 
@@ -166,6 +272,8 @@ def rc_override_control(args):
     rospy.spin()
 
 
+##ATT CONTROL
+
 def attitude_setpoint_control(args):
     rospy.loginfo("MAV-Teleop: Attitude setpoint control type.")
 
@@ -197,6 +305,17 @@ def attitude_setpoint_control(args):
         elif get_buttons(joy,'disarm') == 1:
             arm(args, False)
 
+        if get_buttons(joy,'takeoff') == 1:
+            takeoff(args, 2.0)
+        elif get_buttons(joy,'land') == 1:
+            land(args, 0)
+
+        if get_buttons(joy,'enable') == 1:
+            setmode(args)
+        
+        
+
+
         # TODO: Twist variation
         pose = PoseStamped(header=Header(stamp=rospy.get_rostime()))
         q = quaternion_from_euler(roll, pitch, yaw)
@@ -209,42 +328,6 @@ def attitude_setpoint_control(args):
     jsub = rospy.Subscriber("joy", Joy, joy_cb)
     rospy.spin()
 
-
-def velocity_setpoint_control(args):
-    rospy.loginfo("MAV-Teleop: Velocity setpoint control type.")
-
-    load_map(axes_map, '~axes_map/')
-    load_map(axes_scale, '~axes_scale/')
-    load_map(button_map, '~button_map/')
-
-    vel_pub = SP.get_pub_velocity_cmd_vel(queue_size=10)
-
-    def joy_cb(joy):
-        # get axes normalized to -1.0..+1.0 RPYT
-        roll = get_axis(joy, 'roll')
-        pitch = get_axis(joy, 'pitch')
-        yaw = get_axis(joy, 'yaw')
-        throttle = get_axis(joy, 'throttle')
-
-        rospy.logdebug("RPYT: %f, %f, %f, %f", roll, pitch, yaw, throttle)
-
-        if get_buttons(joy,'arm') == 1:
-            arm(args, True)
-        elif get_buttons(joy,'disarm') == 1:
-            arm(args, False)
-
-        # Based on QGC UAS joystickinput_settargets branch
-        # not shure that it really need inegrating, as it done in QGC.
-        twist = TwistStamped(header=Header(stamp=rospy.get_rostime()))
-        twist.twist.linear = Vector3(x=roll, y=pitch, z=throttle)
-        twist.twist.angular = Vector3(z=yaw)
-
-        vel_pub.publish(twist)
-
-        
-
-    jsub = rospy.Subscriber("joy", Joy, joy_cb)
-    rospy.spin()
 
 
 px, py, pz = 0.0, 0.0, 0.0

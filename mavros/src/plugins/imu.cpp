@@ -74,11 +74,11 @@ public:
 		setup_covariance(magnetic_cov, mag_stdev);
 		setup_covariance(unk_orientation_cov, 0.0);
 
-		imu_pub = imu_nh.advertise<sensor_msgs::Imu>("data", 10);
-		magn_pub = imu_nh.advertise<sensor_msgs::MagneticField>("mag", 10);
-		temp_pub = imu_nh.advertise<sensor_msgs::Temperature>("temperature", 10);
-		press_pub = imu_nh.advertise<sensor_msgs::FluidPressure>("atm_pressure", 10);
-		imu_raw_pub = imu_nh.advertise<sensor_msgs::Imu>("data_raw", 10);
+		imu_pub = imu_nh.advertise<sensor_msgs::Imu>("data", 100);
+		magn_pub = imu_nh.advertise<sensor_msgs::MagneticField>("mag", 100);
+		temp_pub = imu_nh.advertise<sensor_msgs::Temperature>("temperature", 100);
+		press_pub = imu_nh.advertise<sensor_msgs::FluidPressure>("atm_pressure", 100);
+		imu_raw_pub = imu_nh.advertise<sensor_msgs::Imu>("data_raw", 100);
 
 		// Reset has_* flags on connection change
 		enable_connection_cb();
