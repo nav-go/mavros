@@ -14,8 +14,14 @@
 	<class name="fake_gps" type="mavros::extra_plugins::FakeGPSPlugin" base_class_type="mavros::plugin::PluginBase">
 		<description> Sends fake GPS from local position estimation source data (motion capture, vision) to FCU.</description>
 	</class>
+	<class name="gps_rtk" type="mavros::extra_plugins::GpsRtkPlugin" base_class_type="mavros::plugin::PluginBase">
+		<description>Sends the RTCM messages to the FCU for the RTK Fix.</description>
+	</class>
 	<class name="mocap_pose_estimate" type="mavros::extra_plugins::MocapPoseEstimatePlugin" base_class_type="mavros::plugin::PluginBase">
 		<description>Send motion capture pose estimate to FCU.</description>
+	</class>
+	<class name="obstacle_distance" type="mavros::extra_plugins::ObstacleDistancePlugin" base_class_type="mavros::plugin::PluginBase">
+		<description>Send obstacle distance report to the FCU.</description>
 	</class>
 	<class name="odom" type="mavros::extra_plugins::OdometryPlugin" base_class_type="mavros::plugin::PluginBase">
 		<description>Send odometry to FCU from another estimator.</description>
@@ -25,6 +31,9 @@
 	</class>
 	<class name="rangefinder" type="mavros::extra_plugins::RangefinderPlugin" base_class_type="mavros::plugin::PluginBase">
 		<description>Publish RANGEFINDER message data from FCU sensors in companion computer.</description>
+	</class>
+	<class name="trajectory" type="mavros::extra_plugins::TrajectoryPlugin" base_class_type="mavros::plugin::PluginBase">
+		<description>Receive planned path from the FCU and send back corrected path (collision free, smoothed) to the FCU.</description>
 	</class>
 	<class name="vibration" type="mavros::extra_plugins::VibrationPlugin" base_class_type="mavros::plugin::PluginBase">
 		<description>Publish VIBRATION message data from FCU.</description>

@@ -47,6 +47,7 @@ global_position:
   frame_id: "map"             # origin frame
   child_frame_id: "base_link" # body-fixed frame
   rot_covariance: 99999.0   # covariance for attitude?
+  gps_uere: 1.0             # User Equivalent Range Error (UERE) of GPS sensor (m)
   use_relative_alt: true    # use relative altitude for local coordinates
   tf:
     send: false               # send TF?
@@ -198,7 +199,8 @@ vision_pose:
 
 # vision_speed_estimate
 vision_speed:
-  listen_twist: false
+  listen_twist: true    # enable listen to twist topic, else listen to vec3d topic
+  twist_cov: true       # enable listen to twist with covariance topic
 
 # vibration
 vibration:

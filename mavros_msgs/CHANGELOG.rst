@@ -2,6 +2,59 @@
 Changelog for package mavros_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.26.2 (2018-08-08)
+-------------------
+* Updating the gps_rtk plugin to fit mavros guidelines:
+  - Updating max_frag_len to allow changes in size in MAVLink seamlessly
+  - Using std::copy instead of memset
+  - Zero fill with std::fill
+  - Preapply the sequence flags
+  - Use of std iterators
+  - Add the maximal data size in the mavros_msgs
+* Renaming the GPS RTK module, Adding fragmentation, Changing the RTCM message
+* RTK Plugin; to forward RTCM messages
+  Signed-off-by: Alexis Paques <alexis.paques@gmail.com>
+* Contributors: Alexis Paques
+
+0.26.1 (2018-07-19)
+-------------------
+
+0.26.0 (2018-06-06)
+-------------------
+* mavros_msgs : add timesync status message
+* Contributors: Mohammed Kabir
+
+0.25.1 (2018-05-14)
+-------------------
+
+0.25.0 (2018-05-11)
+-------------------
+* trajectory: add time_horizon field
+* change message name from ObstacleAvoidance to Trajectory since it is
+  general enough to support any type of trajectory
+* CMakeLists: add ObstacleAvoidance message
+* add ObstacleAvoidance message
+* msgs: Update message doc link
+* CommandCode: update list of available commands on MAV_CMD enum (`#995 <https://github.com/mavlink/mavros/issues/995>`_)
+* Contributors: Martina, Nuno Marques, Vladimir Ermakov
+
+0.24.0 (2018-04-05)
+-------------------
+* Add ability to send STATUSTEXT messages
+* Contributors: Anass Al
+
+0.23.3 (2018-03-09)
+-------------------
+
+0.23.2 (2018-03-07)
+-------------------
+
+0.23.1 (2018-02-27)
+-------------------
+
+0.23.0 (2018-02-03)
+-------------------
+
 0.22.0 (2017-12-11)
 -------------------
 * SetMavFrame.srv: add FRAME\_ prefix

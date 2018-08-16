@@ -34,8 +34,12 @@ add_message_files(
   RCIn.msg
   RCOut.msg
   RadioStatus.msg
+  RTCM.msg
   State.msg
+  StatusText.msg
   Thrust.msg
+  Trajectory.msg
+  TimesyncStatus.msg
   VFR_HUD.msg
   Vibration.msg
   Waypoint.msg

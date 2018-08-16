@@ -2,6 +2,90 @@
 Changelog for package libmavconn
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.26.2 (2018-08-08)
+-------------------
+
+0.26.1 (2018-07-19)
+-------------------
+
+0.26.0 (2018-06-06)
+-------------------
+* libmavconn: add scheme for permanent UDP broadcasting
+* test python 3 f-string formatting
+* Contributors: Oleg Kalachev, Vladimir Ermakov
+
+0.25.1 (2018-05-14)
+-------------------
+* lib `#1026 <https://github.com/mavlink/mavros/issues/1026>`_: fix logInform compat
+* lib `#1026 <https://github.com/mavlink/mavros/issues/1026>`_: add compat header for older console-bridge
+* Contributors: Vladimir Ermakov
+
+0.25.0 (2018-05-11)
+-------------------
+* lib: console-bridge uses macroses...
+* lib: fixing console-bridge now prefixed
+* Contributors: Vladimir Ermakov
+
+0.24.0 (2018-04-05)
+-------------------
+* libmavconn: make serial.cpp more portable
+* libmavconn : enable low-latency mode on Linux
+  Some common USB-UART convertors like the FTDI accumulates individual bytes from the serial link
+  in order to send them in a single USB packet (Nagling). This commit sets the ASYNC_LOW_LATENCY flag,
+  which the FTDI kernel driver interprets as a request to drop the Nagling timer to 1ms (i.e send all
+  accumulated bytes after 1ms.)
+  This reduces average link RTT to under 5ms at 921600 baud, and enables the use of mavros in
+  systems where low latency is required to get good performance for e.g estimation and controls.
+* Contributors: Mohammed Kabir, Vladimir Ermakov
+
+0.23.3 (2018-03-09)
+-------------------
+* libmavconn: better preprocessor conditions for serial workaround
+* libmavconn : fix hardware flow control setting for Boost < v1.66
+  This commit fixes handling of hardware flow control. Due to bugs in Boost, set_option() would not work for flow control settings. This is fixed in Boost v1.66. Relevant Boost commit : https://github.com/boostorg/asio/commit/619cea4356
+* lib cmake: disable debug message
+* lib: simplify geolib cmake module, try to fix CI
+* Contributors: Mohammed Kabir, Vladimir Ermakov
+
+0.23.2 (2018-03-07)
+-------------------
+* mavconn: small style fix
+* Libmavconn : Set the serial port on Raw mode to prevent EOF error
+* Libmavconn: ensure the ports are cleanly closed before end connexions.
+* Contributors: Pierre Kancir, Vladimir Ermakov
+
+0.23.1 (2018-02-27)
+-------------------
+* compile also with boost >= 1.66.0
+  In boost 1.66.0, which includes boost-asio 1.12.0, the asio
+  interfaces have been changed to follow the "C++ Extensions for
+  Networking" Technical Specification [1]. As a consequence,
+  resolvers now produce ranges rather than iterators.
+  In boost < 1.66.0, resolver.resolve returns an iterator that must
+  be passed to `std::for_each`. As this iterator in boost < 1.66.0
+  does not provide begin() and end() member functions, it cannot be
+  simply turned into a proper range.
+  For boost >= 1.66.0, resolver.resolve returns a range, which
+  can be just iterated through with `for (auto v : _)` syntax.
+  As it is not possible to have one way to iterate through the result
+  independent of the boost version, a preprocessing directive selects
+  the proper synactic iteration construction depending on the provided
+  boost-asio library version [2].
+  This way, this commit is backwards compatible with boost < 1.66.0
+  and compiles properly with boost >= 1.66.0.
+  The issue was identified in a build with the cross-compilation tool
+  chain provided in the meta-ros OpenEmbedded layer [3].
+  [1] http://www.boost.org/doc/libs/1_66_0/doc/html/boost_asio/net_ts.html
+  [2] https://github.com/boostorg/asio/commit/0c9cbdfbf217146c096265b5eb56089e8cebe608
+  [3] http://github.com/bmwcarit/meta-ros
+  Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+* Contributors: Lukas Bulwahn
+
+0.23.0 (2018-02-03)
+-------------------
+* libmavconn: warn->debug table entry message
+* Contributors: Anthony Lamping
+
 0.22.0 (2017-12-11)
 -------------------
 

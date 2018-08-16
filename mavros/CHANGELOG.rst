@@ -2,6 +2,116 @@
 Changelog for package mavros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.26.2 (2018-08-08)
+-------------------
+* Moving gps_rtk to mavros_extras
+* Update copyright name
+* Updating the gps_rtk plugin to fit mavros guidelines:
+  - Updating max_frag_len to allow changes in size in MAVLink seamlessly
+  - Using std::copy instead of memset
+  - Zero fill with std::fill
+  - Preapply the sequence flags
+  - Use of std iterators
+  - Add the maximal data size in the mavros_msgs
+* uncrustify
+* Update comments for the renaming
+* Renaming the GPS RTK module, Adding fragmentation, Changing the RTCM message
+* RTK Plugin; to forward RTCM messages
+  Signed-off-by: Alexis Paques <alexis.paques@gmail.com>
+* Contributors: Alexis Paques
+
+0.26.1 (2018-07-19)
+-------------------
+* setpoint_velocity: fix yaw rate setpoint rotation
+* lib fix `#1051 <https://github.com/mavlink/mavros/issues/1051>`_: Add APM BOAT modes support.
+  Currently SURFACE_BOAT uses same code as Rover2,
+  just different vehicle type.
+* Contributors: TSC21, Vladimir Ermakov
+
+0.26.0 (2018-06-06)
+-------------------
+* lib: add tunable timeout to gcs_quiet_mode
+* udp bridge: pass only HEARTBEATs when GCS is offline
+* sys_time : add advanced timesync algorithm
+* libmavconn: add scheme for permanent UDP broadcasting
+* GPS accuracy wo approximations (`#1034 <https://github.com/mavlink/mavros/issues/1034>`_)
+  * GPS horizontal and vertical accuracy are based now on h_acc, v_acc of GPS_RAW_INT.
+  * GPS horizontal and vertical accuracy are based now on h_acc, v_acc of GPS_RAW_INT if on mavlink v2.0,
+  or on DOP values otherwise.
+  * GPS accuracy update.
+* Contributors: Mohammed Kabir, Oleg Kalachev, Pavlo Kolomiiets, Vladimir Ermakov
+
+0.25.1 (2018-05-14)
+-------------------
+
+0.25.0 (2018-05-11)
+-------------------
+* wind plugin: uncrustify
+* use eigen and tf conversions (fix conventions), sync timestamp, fix typos
+* add wind estimation plugin
+* launch: fix style and keep apm.launch consistent with px4.launch
+* Updated apm.launch to forward new fcu_protocol parameter
+* glob pos plugin: correct gps velocity convention (NEU->ENU)
+* Split temperature publisher.
+* setpoint_raw: correct yaw transform; remove yaw transform methods
+* extras: odom: improve way frame naming is handled
+* extras: update odom plugin to send ODOMETRY msgs
+* lib: enum_to_string: update enums
+* setpoint_attitude: rename topic from target_attitude to attitude
+* imu plugin: fix pressure units
+* imu plugin: publish differential pressure (`#1001 <https://github.com/mavlink/mavros/issues/1001>`_)
+  * imu plugin: publish differential pressure
+  * imu plugin: fix doxygen snippets
+* lib: add PX4 mode AUTO.PRECLAND
+* extras: add covariance parsing to vision_speed_estimate (`#996 <https://github.com/mavlink/mavros/issues/996>`_)
+* Contributors: Anthony Lamping, Nuno Marques, Oleg Kalachev, Sondre Engebråten, TSC21, Thomas Stastny, Timo Hinzmann, Vladimir Ermakov
+
+0.24.0 (2018-04-05)
+-------------------
+* frame_tf: add assertion over size of covariance matrix URT
+* extras: update vision_pose_estimate plugin so it can send the covariance matrix also
+* plugins fix `#990 <https://github.com/mavlink/mavros/issues/990>`_: Explicitly cast boolean values. Else someone can shoot in his foot.
+* Update Readme for serial0: receive: End of file
+* launch : remove vision_pose_estimate from blacklist on ardupilot
+* plugin: ftp: fix typo
+* Add ability to send STATUSTEXT messages
+* Contributors: Anass Al, Andrei Korigodski, Pierre Kancir, TSC21, Vladimir Ermakov
+
+0.23.3 (2018-03-09)
+-------------------
+* lib: simplify geolib cmake module, try to fix CI
+* Contributors: Vladimir Ermakov
+
+0.23.2 (2018-03-07)
+-------------------
+* launch: add optional respawn_mavros arg
+* Contributors: Anthony Lamping
+
+0.23.1 (2018-02-27)
+-------------------
+* lib: Update to_string
+* plugin fix `#957 <https://github.com/mavlink/mavros/issues/957>`_: set MISSION_ITEM::mission_type
+* Contributors: Vladimir Ermakov
+
+0.23.0 (2018-02-03)
+-------------------
+* launch fix `#935 <https://github.com/mavlink/mavros/issues/935>`_: use orientation convention from message descr
+  https://mavlink.io/en/messages/common.html#DISTANCE_SENSOR
+* Blacklist HIL for APM since it is not relevent
+* add MAV_DISTANCE_SENSOR enum to_string
+* px4: add fcu_protocol argument to choose mavlink v1.0 or v2.0 to start
+  mavros in node.launch
+* node: add fcu_protocol parameter to be able to choose mavlink v1.0 or v2.0
+  when starting mavros node
+* mavros: default fcu_protocol parameter to mavlink v2.0
+* manual_control: `send` topic for sending MANUAL_CONTROL message to FCU
+* imu plugin: fix doxygen comments
+* imu plugin: change sufixes to match the body coordinate frame
+* Fix vision odom.
+* IMU plugin: add raw IMU conversion for PX4
+* mention rotation convention and fix NED to ENU description
+* Contributors: ChristophTobler, James Goppert, James Mare, Martina, Oleg Kalachev, TSC21, Vladimir Ermakov
+
 0.22.0 (2017-12-11)
 -------------------
 * scripts: Use non global mavros-ns allow to work __ns parameter

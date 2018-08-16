@@ -40,7 +40,8 @@ Supported schemas:
   - Serial: `serial:///path/to/serial/device[:baudrate][?ids=sysid,compid]`
   - Serial with hardware flow control: `serial-hwfc:///path/to/serial/device[:baudrate][?ids=sysid,compid]`
   - UDP: `udp://[bind_host][:port]@[remote_host[:port]][/?ids=sysid,compid]`
-  - UDP boroadcast: `udp-b://[bind_host][:port]@[:port][/?ids=sysid,compid]`
+  - UDP broadcast until GCS discovery: `udp-b://[bind_host][:port]@[:port][/?ids=sysid,compid]`
+  - UDP broadcast (permanent): `udp-pb://[bind_host][:port]@[:port][/?ids=sysid,compid]
   - TCP client: `tcp://[server_host][:port][/?ids=sysid,compid]`
   - TCP server: `tcp-l://[bind_host][:port][/?ids=sysid,compid]`
 
@@ -227,14 +228,7 @@ Troubleshooting
 ------------
 
 ### Error: serial0: receive: End of file
-
-The full error description can be found on [issue #856][iss856]. Follow these steps:
-1. disconnect flight controller USB
-2. disable USB driver with `sudo modprobe -r usbhid cdc_acm`
-3. re-enable the driver with `sudo modprobe usbhid cdc_acm`
-4. reconnect flight controller USB
-5. try again running mavros launch file for your flight controller
-
+This issue should have been solve in mavros v0.23.2, it was found to be a Boost.ASIO error and should be fix in release > v1.12.0 ( >Boost 1.66).
 
 
 Contributing
